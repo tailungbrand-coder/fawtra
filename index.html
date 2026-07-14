@@ -528,12 +528,25 @@ function tafqeet(number) {
 }
 
 /* ============ حساب ضريبة بوليصة الشحن ============ */
+/* ============ حساب ضريبة بوليصة الشحن ============ */
 function calculateShippingCOD(baseAmount) {
-    if (baseAmount <= 0) return 0;
-    const fullThousands = Math.floor(baseAmount / 1000); 
-    const remainder = baseAmount % 1000; 
-    const tax = (fullThousands * 5) + (remainder > 0 ? 30 : 0);
-    return baseAmount + tax;
+    let codFee = 0;
+    
+    // التأكد من أن المبلغ المدخل رقم صحيح وأكبر من الصفر
+    const net = parseFloat(baseAmount) || 0; 
+    
+    if (net > 0) {
+        if (net <= 1000) {
+            codFee = 30; // 30 جنيه لأول 1000 جنيه أو أقل
+        } else {
+            // حساب الآلاف الإضافية (مع تقريب الكسور للأعلى باستخدام Math.ceil)
+            const extraThousands = Math.ceil((net - 1000) / 1000);
+            codFee = 30 + (extraThousands * 5); // 30 أساسي + 5 عن كل ألف إضافي
+        }
+    }
+    
+    // إرجاع المبلغ الأساسي + رسوم التحصيل (الضريبة)
+    return net + codFee; 
 }
 
 /* ============ Imported Customers Data (Cleaned & Parsed) ============ */
